@@ -7,8 +7,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    if: "!startsWith(github.event.head_commit.message, 'ci:')"
+
     permissions:
       packages: write
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -37,3 +41,19 @@ jobs:
           USERNAME=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
           docker build -t ghcr.io/$USERNAME/quickticket-payments:${{ github.sha }} ./app/payments
           docker push ghcr.io/$USERNAME/quickticket-payments:${{ github.sha }}
+
+      - name: Update image tags in manifests
+        run: |
+          USERNAME=$(echo "${{ github.actor }}" | tr '[:upper:]' '[:lower:]')
+          SHA=${{ github.sha }}
+          sed -i "s|image: ghcr.io/.*/quickticket-gateway:.*|image: ghcr.io/${USERNAME}/quickticket-gateway:${SHA}|" k8s/gateway.yaml
+          sed -i "s|image: ghcr.io/.*/quickticket-events:.*|image: ghcr.io/${USERNAME}/quickticket-events:${SHA}|" k8s/events.yaml
+          sed -i "s|image: ghcr.io/.*/quickticket-payments:.*|image: ghcr.io/${USERNAME}/quickticket-payments:${SHA}|" k8s/payments.yaml
+
+      - name: Commit and push manifest update
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add k8s/
+          git diff --cached --quiet || git commit -m "ci: update image tags to ${{ github.sha }}"
+          git push
