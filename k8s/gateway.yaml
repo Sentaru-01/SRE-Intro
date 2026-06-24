@@ -12,10 +12,12 @@ spec:
       labels:
         app: gateway
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: gateway
-          image: quickticket-gateway:v1
-          imagePullPolicy: Never
+          image: ghcr.io/sentaru-01/quickticket-gateway:eab4e21d9229c2f2f0da95a94addc07d338d2bde
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
