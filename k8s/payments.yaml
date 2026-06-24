@@ -16,7 +16,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: payments
-          image: ghcr.io/sentaru-01/quickticket-payments:eab4e21d9229c2f2f0da95a94addc07d338d2bde
+          image: ghcr.io/sentaru-01/quickticket-payments:7ca26bd76ac3f11f03b9e2fd872d9ae1220c830e
           imagePullPolicy: Always
           ports:
             - containerPort: 8082
