@@ -18,7 +18,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: gateway
-          image: ghcr.io/sentaru-01/quickticket-gateway:7ca26bd76ac3f11f03b9e2fd872d9ae1220c830e
+          image: ghcr.io/sentaru-01/quickticket-gateway:f220a8c65310b0834909c1462be7be09d77bc6b6
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
